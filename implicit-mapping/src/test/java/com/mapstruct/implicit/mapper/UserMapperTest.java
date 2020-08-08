@@ -38,6 +38,7 @@ public class UserMapperTest {
                 .email("tom@gamil.com")
                 .gender("MALE")
                 .addresses(addresses)
+                .job("Actor")
                 .build();
 
         User user = this.userMapper.toEntity(userDTO);
@@ -46,6 +47,7 @@ public class UserMapperTest {
         assertEquals(userDTO.getLastName(), user.getLastName());
         assertEquals(userDTO.getEmail(), user.getEmail());
         assertEquals(userDTO.getGender(), user.getGender().name());
+        assertEquals(userDTO.getJob(), user.getProfession());
         assertNotNull(user.getAddresses());
         assertEquals(addressDTO.getId(), user.getAddresses().iterator().next().getId());
         assertEquals(addressDTO.getCity(), user.getAddresses().iterator().next().getCity());
@@ -73,6 +75,7 @@ public class UserMapperTest {
                 .email("tom@gamil.com")
                 .gender(Gender.MALE)
                 .addresses(addresses)
+                .profession("Actor")
                 .build();
 
         UserDTO dto = this.userMapper.toDto(user);
@@ -81,6 +84,7 @@ public class UserMapperTest {
         assertEquals(user.getLastName(), dto.getLastName());
         assertEquals(user.getEmail(), dto.getEmail());
         assertEquals(user.getGender().name(), dto.getGender());
+        assertEquals(user.getProfession(), dto.getJob());
         assertNotNull(dto.getAddresses());
         assertEquals(address.getId(), dto.getAddresses().iterator().next().getId());
         assertEquals(address.getCity(), dto.getAddresses().iterator().next().getCity());

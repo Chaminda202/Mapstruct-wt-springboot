@@ -32,6 +32,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+    @Column(name = "profession")
+    private String profession;
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses = new HashSet<>();
