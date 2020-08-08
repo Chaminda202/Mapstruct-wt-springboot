@@ -16,5 +16,6 @@ public class UserDTO {
     private String lastName;
     private String gender;
     private String job;
+    private String registerDate;
     private Set<AddressDTO> addresses;
 }

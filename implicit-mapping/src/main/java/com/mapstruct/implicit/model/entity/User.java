@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +35,8 @@ public class User {
     private Gender gender;
     @Column(name = "profession")
     private String profession;
+    @Column(name = "register_dt_tm")
+    private LocalDateTime registerDate;
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Address> addresses = new HashSet<>();

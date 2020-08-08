@@ -1,5 +1,6 @@
 package com.mapstruct.implicit.mapper;
 
+import com.mapstruct.implicit.config.ApplicationProperties;
 import com.mapstruct.implicit.enumeration.Gender;
 import com.mapstruct.implicit.model.AddressDTO;
 import com.mapstruct.implicit.model.UserDTO;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     @Test
     void toEntityTest() {
@@ -39,6 +44,7 @@ public class UserMapperTest {
                 .gender("MALE")
                 .addresses(addresses)
                 .job("Actor")
+                .registerDate("2020-08-08T17:40:05") //2020-08-08T17:40:05
                 .build();
 
         User user = this.userMapper.toEntity(userDTO);
@@ -48,6 +54,8 @@ public class UserMapperTest {
         assertEquals(userDTO.getEmail(), user.getEmail());
         assertEquals(userDTO.getGender(), user.getGender().name());
         assertEquals(userDTO.getJob(), user.getProfession());
+        assertEquals(userDTO.getRegisterDate(), user.getRegisterDate()
+                .format(DateTimeFormatter.ofPattern(this.applicationProperties.getDataTimeFormat())));
         assertNotNull(user.getAddresses());
         assertEquals(addressDTO.getId(), user.getAddresses().iterator().next().getId());
         assertEquals(addressDTO.getCity(), user.getAddresses().iterator().next().getCity());
@@ -76,6 +84,7 @@ public class UserMapperTest {
                 .gender(Gender.MALE)
                 .addresses(addresses)
                 .profession("Actor")
+                .registerDate(LocalDateTime.of(2020, 8, 8, 17, 40, 5))
                 .build();
 
         UserDTO dto = this.userMapper.toDto(user);
@@ -85,6 +94,8 @@ public class UserMapperTest {
         assertEquals(user.getEmail(), dto.getEmail());
         assertEquals(user.getGender().name(), dto.getGender());
         assertEquals(user.getProfession(), dto.getJob());
+        assertEquals(user.getRegisterDate().format(DateTimeFormatter                                // should be required to format before checks equal
+                .ofPattern(this.applicationProperties.getDataTimeFormat())), dto.getRegisterDate());
         assertNotNull(dto.getAddresses());
         assertEquals(address.getId(), dto.getAddresses().iterator().next().getId());
         assertEquals(address.getCity(), dto.getAddresses().iterator().next().getCity());
