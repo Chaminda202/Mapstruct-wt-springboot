@@ -5,7 +5,7 @@ import com.mapstruct.explicit.model.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {DateMapper.class}, componentModel = "spring") //format date according to custom format (not a default format yyyy-MM-dd'T'HH:mm:ss)
+@Mapper(uses = {DateMapper.class, PhoneMapper.class}, componentModel = "spring") //format date according to custom format (not a default format yyyy-MM-dd'T'HH:mm:ss)
 public interface UserMapper {
     @Mapping(source = "job", target = "profession")
     @Mapping(source = "addressList", target = "addresses")

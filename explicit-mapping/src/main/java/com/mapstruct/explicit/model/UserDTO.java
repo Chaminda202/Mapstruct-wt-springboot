@@ -19,6 +19,7 @@ public class UserDTO {
     private String gender;
     private String job;
     private String registerDate;
+    private double salary;
     private Set<AddressDTO> addressList;
     private List<PhoneDTO> phones;
 }

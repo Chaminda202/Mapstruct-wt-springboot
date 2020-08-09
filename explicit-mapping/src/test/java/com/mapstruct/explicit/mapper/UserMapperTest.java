@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class UserMapperTest {
 
         PhoneDTO phoneDTO = PhoneDTO.builder()
                 .number("+662343756")
-                .phoneType(PhoneType.LAND_LINE.name())
+                .phoneType(PhoneType.LAND_LINE.getDescription())
                 .build();
 
         List<PhoneDTO> phones = Arrays.asList(phoneDTO);
@@ -58,6 +59,7 @@ public class UserMapperTest {
                 .job("Actor")
                 .registerDate("2020-08-08 17:40")
                 .phones(phones)
+                .salary(300.45)
                 .build();
 
         User user = this.userMapper.toEntity(userDTO);
@@ -67,6 +69,7 @@ public class UserMapperTest {
         assertEquals(userDTO.getEmail(), user.getEmail());
         assertEquals(userDTO.getGender(), user.getGender().name());
         assertEquals(userDTO.getJob(), user.getProfession());
+        assertEquals(userDTO.getSalary(), user.getSalary().doubleValue());
         assertEquals(userDTO.getRegisterDate(), user.getRegisterDate()
                 .format(DateTimeFormatter.ofPattern(this.applicationProperties.getDataTimeFormat())));
         assertNotNull(user.getAddresses());
@@ -75,7 +78,7 @@ public class UserMapperTest {
         assertEquals(addressDTO.getStreet(), user.getAddresses().iterator().next().getStreet());
         assertEquals(addressDTO.getZip(), user.getAddresses().iterator().next().getZip());
         assertEquals(phoneDTO.getNumber(), user.getPhones().iterator().next().getNumber());
-        assertEquals(phoneDTO.getPhoneType(), user.getPhones().iterator().next().getPhoneType().name());
+        assertEquals(phoneDTO.getPhoneType(), user.getPhones().iterator().next().getPhoneType().getDescription());
         assertNull(user.getAddresses().iterator().next().getUser());
     }
 
@@ -107,6 +110,7 @@ public class UserMapperTest {
                 .profession("Actor")
                 .registerDate(LocalDateTime.of(2020, 8, 8, 17, 40))
                 .phones(phones)
+                .salary(new BigDecimal("345.50"))
                 .build();
 
         UserDTO dto = this.userMapper.toDto(user);
@@ -116,6 +120,7 @@ public class UserMapperTest {
         assertEquals(user.getEmail(), dto.getEmail());
         assertEquals(user.getGender().name(), dto.getGender());
         assertEquals(user.getProfession(), dto.getJob());
+        assertEquals(user.getSalary().doubleValue(), dto.getSalary());
         assertEquals(user.getRegisterDate().format(DateTimeFormatter
                 .ofPattern(this.applicationProperties.getDataTimeFormat())), dto.getRegisterDate());
         assertEquals(user.getFirstName()+" "+user.getLastName(), dto.getName());
@@ -127,7 +132,6 @@ public class UserMapperTest {
         assertNull(dto.getAddressList().iterator().next().getUser());
         assertEquals(phone.getId(), dto.getPhones().iterator().next().getId());
         assertEquals(phone.getNumber(), dto.getPhones().iterator().next().getNumber());
-        assertEquals(phone.getPhoneType().name(), dto.getPhones().iterator().next().getPhoneType());
-
+        assertEquals(phone.getPhoneType().getDescription(), dto.getPhones().iterator().next().getPhoneType());
     }
 }
