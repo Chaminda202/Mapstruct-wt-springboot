@@ -12,5 +12,6 @@ public interface UserMapper {
     User toEntity(UserDTO userDTO);
     @Mapping(source = "profession", target = "job")
     @Mapping(source = "addresses", target = "addressList")
+    @Mapping(target = "name", expression = "java(user.getFirstName() +\" \"+ user.getLastName())")
     UserDTO toDto(User user);
 }

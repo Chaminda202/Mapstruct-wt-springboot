@@ -118,6 +118,7 @@ public class UserMapperTest {
         assertEquals(user.getProfession(), dto.getJob());
         assertEquals(user.getRegisterDate().format(DateTimeFormatter
                 .ofPattern(this.applicationProperties.getDataTimeFormat())), dto.getRegisterDate());
+        assertEquals(user.getFirstName()+" "+user.getLastName(), dto.getName());
         assertNotNull(dto.getAddressList());
         assertEquals(address.getId(), dto.getAddressList().iterator().next().getId());
         assertEquals(address.getCity(), dto.getAddressList().iterator().next().getCity());
