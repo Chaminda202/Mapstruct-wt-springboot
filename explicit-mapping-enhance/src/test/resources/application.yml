@@ -1,0 +1,36 @@
+#spring:
+#  datasource:
+#    driverClassName: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/map-struct_test_db?createDatabaseIfNotExist=true
+#    username: root
+#    password:
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+
+
+spring:
+  application:
+    name: mapstruct-implicit-mapping
+
+    data-time-format: yyyy-MM-dd HH:mm
+
+  #H2 db configuration
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
