@@ -9,6 +9,7 @@ import com.mapstruct.explicit.model.UserDTO;
 import com.mapstruct.explicit.model.entity.Address;
 import com.mapstruct.explicit.model.entity.Phone;
 import com.mapstruct.explicit.model.entity.User;
+import com.mapstruct.explicit.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,8 @@ public class UserMapperTest {
     private UserMapper userMapper;
     @Autowired
     private ApplicationProperties applicationProperties;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void toEntityTest() {
@@ -133,5 +136,91 @@ public class UserMapperTest {
         assertEquals(phone.getId(), dto.getPhones().iterator().next().getId());
         assertEquals(phone.getNumber(), dto.getPhones().iterator().next().getNumber());
         assertEquals(phone.getPhoneType().getDescription(), dto.getPhones().iterator().next().getPhoneType());
+    }
+
+    @Test
+    void toUpdateEntityTest() {
+        AddressDTO addressDTO = AddressDTO.builder()
+                .city("Melbourne")
+                .street("Sad Lane 41")
+                .zip(54389)
+                .build();
+
+        Set<AddressDTO> addresses = Stream.of(addressDTO).collect(Collectors.toSet());
+
+        PhoneDTO phoneDTO = PhoneDTO.builder()
+                .number("+662343756")
+                .phoneType(PhoneType.LAND_LINE.getDescription())
+                .build();
+
+        List<PhoneDTO> phones = Arrays.asList(phoneDTO);
+
+        UserDTO userDTO = UserDTO.builder()
+                .firstName("Tom")
+                .lastName("Cruise")
+                .email("tom@gamil.com")
+                .gender("MALE")
+                .addressList(addresses)
+                .job("Actor")
+                .registerDate("2020-08-08 17:40")
+                .phones(phones)
+                .salary(300.45)
+                .build();
+
+        User user = this.userRepository.save(this.userMapper.toEntity(userDTO));
+        assertNotNull(user.getId());
+
+        // define update values
+        AddressDTO updateAddressDTO = AddressDTO.builder()
+                .id(user.getAddresses().iterator().next().getId())
+                .city("Melbourne update")
+                .street("Sad Lane  update")
+                .zip(54389)
+                .build();
+
+        Set<AddressDTO> updateAddresses = Stream.of(updateAddressDTO).collect(Collectors.toSet());
+
+        PhoneDTO updatePhoneDTO = PhoneDTO.builder()
+                .id(user.getPhones().iterator().next().getId())
+                .number("+662343758")
+                .phoneType(PhoneType.MOBILE.getDescription())
+                .build();
+
+        List<PhoneDTO> updatePhones = Arrays.asList(updatePhoneDTO);
+
+        UserDTO updateUserDTO = UserDTO.builder()
+                .id(user.getId())
+                .firstName("Tom Update")
+                .lastName("Cruise")
+                .email("tom@gamil.com")
+                .gender("MALE")
+                .addressList(updateAddresses)
+                .job("Actor Update")
+                .registerDate("2020-08-08 17:40")
+                .phones(updatePhones)
+                .salary(300.45)
+                .build();
+
+        User updateUserDetails = this.userMapper.toUpdateEntity(updateUserDTO, user);
+        User updatedUser = this.userRepository.save(updateUserDetails);
+
+        assertEquals(updateUserDTO.getId(), updatedUser.getId());
+        assertEquals(updateUserDTO.getFirstName(), updatedUser.getFirstName());
+        assertEquals(updateUserDTO.getLastName(), updatedUser.getLastName());
+        assertEquals(updateUserDTO.getEmail(), updatedUser.getEmail());
+        assertEquals(updateUserDTO.getGender(), updatedUser.getGender().name());
+        assertEquals(updateUserDTO.getJob(), updatedUser.getProfession());
+        assertEquals(updateUserDTO.getSalary(), updatedUser.getSalary().doubleValue());
+        assertEquals(updateUserDTO.getRegisterDate(), updatedUser.getRegisterDate().format(DateTimeFormatter
+                .ofPattern(this.applicationProperties.getDataTimeFormat())));
+        assertNotNull(updatedUser.getAddresses());
+        assertEquals(updateAddressDTO.getId(), updatedUser.getAddresses().iterator().next().getId());
+        assertEquals(updateAddressDTO.getCity(), updatedUser.getAddresses().iterator().next().getCity());
+        assertEquals(updateAddressDTO.getStreet(), updatedUser.getAddresses().iterator().next().getStreet());
+        assertEquals(updateAddressDTO.getZip(), updatedUser.getAddresses().iterator().next().getZip());
+        assertNull(updatedUser.getAddresses().iterator().next().getUser());
+        assertEquals(updatePhoneDTO.getId(), updatedUser.getPhones().iterator().next().getId());
+        assertEquals(updatePhoneDTO.getNumber(), updatedUser.getPhones().iterator().next().getNumber());
+        assertEquals(updatePhoneDTO.getPhoneType(), updatedUser.getPhones().iterator().next().getPhoneType().getDescription());
     }
 }
